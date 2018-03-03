@@ -42,6 +42,25 @@ namespace _2048.Domain.Tests
 			sut[row, 3].Should().Be(2.ToMaybe());
 		}
 
+		[Fact]
+		public void When2Along00To33Diagonal_MoveRight_2Along03To33Line()
+		{
+			var sut = new Game
+			{
+				[0, 0] = 2.ToMaybe(),
+				[1, 1] = 2.ToMaybe(),
+				[2, 2] = 2.ToMaybe(),
+				[3, 3] = 2.ToMaybe()
+			};
+
+			sut.Move(Direction.Right);
+
+			sut[0, 3].Should().Be(2.ToMaybe());
+			sut[1, 3].Should().Be(2.ToMaybe());
+			sut[2, 3].Should().Be(2.ToMaybe());
+			sut[3, 3].Should().Be(2.ToMaybe());
+		}
+
 		[Theory]
 		[InlineData(0, 0)]
 		[InlineData(1, 0)]
@@ -76,6 +95,25 @@ namespace _2048.Domain.Tests
 			sut.Move(Direction.Down);
 
 			sut[3, column].Should().Be(2.ToMaybe());
+		}
+
+		[Fact]
+		public void When2Along00To33Diagonal_MoveDown_2Along30To33Line()
+		{
+			var sut = new Game
+			{
+				[0, 0] = 2.ToMaybe(),
+				[1, 1] = 2.ToMaybe(),
+				[2, 2] = 2.ToMaybe(),
+				[3, 3] = 2.ToMaybe()
+			};
+
+			sut.Move(Direction.Down);
+
+			sut[3, 0].Should().Be(2.ToMaybe());
+			sut[3, 1].Should().Be(2.ToMaybe());
+			sut[3, 2].Should().Be(2.ToMaybe());
+			sut[3, 3].Should().Be(2.ToMaybe());
 		}
 
 		[Theory]
@@ -114,6 +152,25 @@ namespace _2048.Domain.Tests
 			sut[row, 0].Should().Be(2.ToMaybe());
 		}
 
+		[Fact]
+		public void When2Along00To33Diagonal_MoveLeft_2Along00To30Line()
+		{
+			var sut = new Game
+			{
+				[0, 0] = 2.ToMaybe(),
+				[1, 1] = 2.ToMaybe(),
+				[2, 2] = 2.ToMaybe(),
+				[3, 3] = 2.ToMaybe()
+			};
+
+			sut.Move(Direction.Left);
+
+			sut[0, 0].Should().Be(2.ToMaybe());
+			sut[1, 0].Should().Be(2.ToMaybe());
+			sut[2, 0].Should().Be(2.ToMaybe());
+			sut[3, 0].Should().Be(2.ToMaybe());
+		}
+
 		[Theory]
 		[InlineData(1, 1)]
 		[InlineData(1, 2)]
@@ -148,6 +205,25 @@ namespace _2048.Domain.Tests
 			sut.Move(Direction.Up);
 
 			sut[0, column].Should().Be(2.ToMaybe());
+		}
+
+		[Fact]
+		public void When2Along00To33Diagonal_MoveUp_2Along00To03Line()
+		{
+			var sut = new Game
+			{
+				[0, 0] = 2.ToMaybe(),
+				[1, 1] = 2.ToMaybe(),
+				[2, 2] = 2.ToMaybe(),
+				[3, 3] = 2.ToMaybe()
+			};
+
+			sut.Move(Direction.Up);
+
+			sut[0, 0].Should().Be(2.ToMaybe());
+			sut[0, 1].Should().Be(2.ToMaybe());
+			sut[0, 2].Should().Be(2.ToMaybe());
+			sut[0, 3].Should().Be(2.ToMaybe());
 		}
 	}
 }

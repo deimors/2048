@@ -16,38 +16,110 @@ namespace _2048
 
 		public void Move(Direction direction)
 		{
-			foreach (var row in Enumerable.Range(0, 4))
+			switch (direction)
 			{
-				foreach (var column in Enumerable.Range(0, 4))
-				{
-					var cellValue = this[row, column];
-
-					cellValue.Match(
-						number =>
+				case Direction.Right:
+					foreach (var row in Enumerable.Range(0, 4))
+					{
+						foreach (var column in Enumerable.Range(0, 4).Reverse())
 						{
-							this[row, column] = Maybe<int>.Nothing;
+							this[row, column].Match(
+								number =>
+								{
+									this[row, column] = Maybe<int>.Nothing;
 
-							switch (direction)
-							{
-								case Direction.Right:
-									this[row, 3] = number.ToMaybe();
-									break;
-								case Direction.Down:
-									this[3, column] = number.ToMaybe();
-									break;
-								case Direction.Left:
-									this[row, 0] = number.ToMaybe();
-									break;
-								case Direction.Up:
-									this[0, column] = number.ToMaybe();
-									break;
-								default:
-									throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-							}
-						},
-						() => { }
-					);
-				}
+									var moveColumn = Enumerable.Range(column + 1, 3 - column)
+										.FirstMaybe(scanColumn => this[row, scanColumn].HasValue)
+										.SelectOrElse(
+											neighborColumn => neighborColumn - 1,
+											() => 3
+										);
+
+									this[row, moveColumn] = number.ToMaybe();
+								},
+								() => { }
+							);
+						}
+					}
+					break;
+
+				case Direction.Down:
+					foreach (var row in Enumerable.Range(0, 4).Reverse())
+					{
+						foreach (var column in Enumerable.Range(0, 4))
+						{
+							this[row, column].Match(
+								number =>
+								{
+									this[row, column] = Maybe<int>.Nothing;
+
+									var moveRow = Enumerable.Range(row + 1, 3 - row)
+										.FirstMaybe(scanRow => this[scanRow, column].HasValue)
+										.SelectOrElse(
+											neighborRow => neighborRow - 1,
+											() => 3
+										);
+
+									this[moveRow, column] = number.ToMaybe();
+								},
+								() => { }
+							);
+						}
+					}
+					break;
+
+				case Direction.Left:
+					foreach (var row in Enumerable.Range(0, 4))
+					{
+						foreach (var column in Enumerable.Range(0, 4))
+						{
+							this[row, column].Match(
+								number =>
+								{
+									this[row, column] = Maybe<int>.Nothing;
+
+									var moveColumn = Enumerable.Range(0, column).Reverse()
+										.FirstMaybe(scanColumn => this[row, scanColumn].HasValue)
+										.SelectOrElse(
+											neighborColumn => neighborColumn + 1,
+											() => 0
+										);
+
+									this[row, moveColumn] = number.ToMaybe();
+								},
+								() => { }
+							);
+						}
+					}
+					break;
+
+				case Direction.Up:
+					foreach (var row in Enumerable.Range(0, 4))
+					{
+						foreach (var column in Enumerable.Range(0, 4))
+						{
+							this[row, column].Match(
+								number =>
+								{
+									this[row, column] = Maybe<int>.Nothing;
+
+									var moveRow = Enumerable.Range(0, row).Reverse()
+										.FirstMaybe(scanRow => this[scanRow, column].HasValue)
+										.SelectOrElse(
+											neighborRow => neighborRow + 1,
+											() => 0
+										);
+
+									this[moveRow, column] = number.ToMaybe();
+								},
+								() => { }
+							);
+						}
+					}
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
 			}
 		}
 	}
