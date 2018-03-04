@@ -41,35 +41,40 @@ namespace _2048
 		
 		public void Move(Direction direction)
 		{
-			var positions = GetPositionsForMove(direction);
+			var positions = GetPositionSequenceForMove(direction);
 
 			foreach (var position in positions)
 			{
-				this[position.Row, position.Column].Match(
-					number => FindMovePosition(number, Project(position, direction))
-						.Match(
-							newPosition =>
-							{
-								this[position] = Maybe<int>.Nothing;
-
-								this[newPosition] = this[newPosition].SelectOrElse(
-									prevValue => number + prevValue,
-									() => number
-								).ToMaybe();
-							},
-							() => { }
-						),
-					() => { }
-				);
+				MoveNumberInDirection(position, direction);
 			}
 		}
 
-		private static IEnumerable<Position> GetPositionsForMove(Direction moveDirection)
+		private void MoveNumberInDirection(Position position, Direction direction) 
+			=> this[position].Match(
+				number => FindMoveTarget(number, position, direction)
+					.Match(
+						target => MoveToTarget(position, target, number),
+						() => { }
+					),
+				() => { }
+			);
+
+		private void MoveToTarget(Position origin, Position target, int number)
+		{
+			this[origin] = Maybe<int>.Nothing;
+
+			this[target] = this[target].SelectOrElse(
+				prevValue => number + prevValue,
+				() => number
+			).ToMaybe();
+		}
+
+		private static IEnumerable<Position> GetPositionSequenceForMove(Direction direction)
 		{
 			var rows = Enumerable.Range(0, 4);
 			var columns = Enumerable.Range(0, 4);
 
-			switch (moveDirection)
+			switch (direction)
 			{
 				case Direction.Down:
 					rows = rows.Reverse();
@@ -81,6 +86,31 @@ namespace _2048
 
 			return rows.SelectMany(row => columns.Select(column => new Position(row, column)));
 		}
+		
+		private static Position GetIncrement(Direction direction)
+		{
+			switch (direction)
+			{
+				case Direction.Right: return new Position(0, 1);
+				case Direction.Down: return new Position(1, 0);
+				case Direction.Left: return new Position(0, -1);
+				case Direction.Up: return new Position(-1, 0);
+				default: throw new ArgumentOutOfRangeException(nameof(direction), direction, $"Unknown Direction: {direction}");
+			}
+		}
+		
+		private Maybe<Position> FindMoveTarget(int startNumber, Position position, Direction direction)
+			=> FindMoveTarget(startNumber, Project(position, direction).ToArray());
+
+		private Maybe<Position> FindMoveTarget(int startNumber, (Maybe<Position> previous, Position current)[] projection) 
+			=> projection
+				.FirstMaybe(pair => this[pair.current].HasValue)
+				.SelectOrElse(
+					somePair => this[somePair.current].Value == startNumber
+						? somePair.current.ToMaybe()
+						: somePair.previous,
+					() => projection.LastMaybe().Select(pair => pair.current)
+				);
 
 		private static IEnumerable<(Maybe<Position> previous, Position current)> Project(Position start, Direction direction)
 		{
@@ -96,58 +126,7 @@ namespace _2048
 			}
 		}
 
-		private static Position GetIncrement(Direction direction)
-		{
-			switch (direction)
-			{
-				case Direction.Right: return new Position(0, 1);
-				case Direction.Down: return new Position(1, 0);
-				case Direction.Left: return new Position(0, -1);
-				case Direction.Up: return new Position(-1, 0);
-				default: throw new ArgumentOutOfRangeException(nameof(direction), direction, $"Unknown Direction: {direction}");
-			}
-		}
-
 		private static bool IsInBounds(Position pos)
 			=> pos.Row >= 0 && pos.Row <= 3 && pos.Column >= 0 && pos.Column <= 3;
-
-		private Maybe<Position> FindMovePosition(int startNumber, IEnumerable<(Maybe<Position> previous, Position current)> projection) 
-			=> projection
-				.FirstMaybe(pair => this[pair.current.Row, pair.current.Column].HasValue)
-				.SelectOrElse(
-					somePair => this[somePair.current.Row, somePair.current.Column].Value == startNumber
-						? somePair.current.ToMaybe()
-						: somePair.previous,
-					() => projection.LastMaybe().Select(pair => pair.current)
-				);
-	}
-
-	internal static class EnumerableExtensions
-	{
-		public static IEnumerable<T> Prepend<T>(this IEnumerable<T> source, T prependItem)
-		{
-			yield return prependItem;
-
-			foreach (var item in source)
-				yield return item;
-		}
-
-		public static IEnumerable<(T first, T second)> Pairwise<T>(this IEnumerable<T> source)
-		{
-			using (var enumerator = source.GetEnumerator())
-			{
-				if (!enumerator.MoveNext())
-					yield break;
-
-				var first = enumerator.Current;
-
-				while (enumerator.MoveNext())
-				{
-					var second = enumerator.Current;
-					yield return (first, second);
-					first = second;
-				}
-			}
-		}
 	}
 }
