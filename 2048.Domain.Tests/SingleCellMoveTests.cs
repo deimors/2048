@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Functional.Maybe;
 using Xunit;
 
 namespace _2048.Domain.Tests
@@ -12,17 +11,17 @@ namespace _2048.Domain.Tests
 		[InlineData(3, 0)]
 		[InlineData(0, 2)]
 		[InlineData(2, 1)]
-		public void When2AtRowColumn_MoveRight_RowColumnIsNothingAnd2AtSameRowColumn3(int row, int column)
+		public void When2AtRowColumn_MoveRight_RowColumnIsEmptyAnd2AtSameRowColumn3(int row, int column)
 		{
 			var sut = new Game
 			{
-				[row, column] = 2.ToMaybe()
+				[row, column] = 2
 			};
 
 			sut.Move(Direction.Right);
 
-			sut[row, column].Should().Be(Maybe<int>.Nothing);
-			sut[row, 3].Should().Be(2.ToMaybe());
+			sut[row, column].Should().Be(CellValue.Empty);
+			sut[row, 3].Should().Be(2);
 		}
 
 		[Theory]
@@ -34,12 +33,12 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[row, 3] = 2.ToMaybe()
+				[row, 3] = 2
 			};
 
 			sut.Move(Direction.Right);
 
-			sut[row, 3].Should().Be(2.ToMaybe());
+			sut[row, 3].Should().Be(2);
 		}
 
 		[Fact]
@@ -47,18 +46,18 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[1, 1] = 2.ToMaybe(),
-				[2, 2] = 2.ToMaybe(),
-				[3, 3] = 2.ToMaybe()
+				[0, 0] = 2,
+				[1, 1] = 2,
+				[2, 2] = 2,
+				[3, 3] = 2
 			};
 
 			sut.Move(Direction.Right);
 
-			sut[0, 3].Should().Be(2.ToMaybe());
-			sut[1, 3].Should().Be(2.ToMaybe());
-			sut[2, 3].Should().Be(2.ToMaybe());
-			sut[3, 3].Should().Be(2.ToMaybe());
+			sut[0, 3].Should().Be(2);
+			sut[1, 3].Should().Be(2);
+			sut[2, 3].Should().Be(2);
+			sut[3, 3].Should().Be(2);
 		}
 
 		[Theory]
@@ -67,17 +66,17 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 0)]
 		[InlineData(0, 2)]
 		[InlineData(2, 1)]
-		public void When2AtRowColumn_MoveDown_RowColumnIsNothingAnd2AtRow3SameColumn(int row, int column)
+		public void When2AtRowColumn_MoveDown_RowColumnIsEmptyAnd2AtRow3SameColumn(int row, int column)
 		{
 			var sut = new Game
 			{
-				[row, column] = 2.ToMaybe()
+				[row, column] = 2
 			};
 
 			sut.Move(Direction.Down);
 
-			sut[row, column].Should().Be(Maybe<int>.Nothing);
-			sut[3, column].Should().Be(2.ToMaybe());
+			sut[row, column].Should().Be(CellValue.Empty);
+			sut[3, column].Should().Be(2);
 		}
 
 		[Theory]
@@ -89,12 +88,12 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[3, column] = 2.ToMaybe()
+				[3, column] = 2
 			};
 
 			sut.Move(Direction.Down);
 
-			sut[3, column].Should().Be(2.ToMaybe());
+			sut[3, column].Should().Be(2);
 		}
 
 		[Fact]
@@ -102,18 +101,18 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[1, 1] = 2.ToMaybe(),
-				[2, 2] = 2.ToMaybe(),
-				[3, 3] = 2.ToMaybe()
+				[0, 0] = 2,
+				[1, 1] = 2,
+				[2, 2] = 2,
+				[3, 3] = 2
 			};
 
 			sut.Move(Direction.Down);
 
-			sut[3, 0].Should().Be(2.ToMaybe());
-			sut[3, 1].Should().Be(2.ToMaybe());
-			sut[3, 2].Should().Be(2.ToMaybe());
-			sut[3, 3].Should().Be(2.ToMaybe());
+			sut[3, 0].Should().Be(2);
+			sut[3, 1].Should().Be(2);
+			sut[3, 2].Should().Be(2);
+			sut[3, 3].Should().Be(2);
 		}
 
 		[Theory]
@@ -122,17 +121,17 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 3)]
 		[InlineData(0, 2)]
 		[InlineData(2, 1)]
-		public void When2AtRowColumn_MoveLeft_RowColumnIsNothingAnd2AtSameRowColumn0(int row, int column)
+		public void When2AtRowColumn_MoveLeft_RowColumnIsEmptyAnd2AtSameRowColumn0(int row, int column)
 		{
 			var sut = new Game
 			{
-				[row, column] = 2.ToMaybe()
+				[row, column] = 2
 			};
 
 			sut.Move(Direction.Left);
 
-			sut[row, column].Should().Be(Maybe<int>.Nothing);
-			sut[row, 0].Should().Be(2.ToMaybe());
+			sut[row, column].Should().Be(CellValue.Empty);
+			sut[row, 0].Should().Be(2);
 		}
 
 		[Theory]
@@ -144,12 +143,12 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[row, 0] = 2.ToMaybe()
+				[row, 0] = 2
 			};
 
 			sut.Move(Direction.Left);
 
-			sut[row, 0].Should().Be(2.ToMaybe());
+			sut[row, 0].Should().Be(2);
 		}
 
 		[Fact]
@@ -157,18 +156,18 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[1, 1] = 2.ToMaybe(),
-				[2, 2] = 2.ToMaybe(),
-				[3, 3] = 2.ToMaybe()
+				[0, 0] = 2,
+				[1, 1] = 2,
+				[2, 2] = 2,
+				[3, 3] = 2
 			};
 
 			sut.Move(Direction.Left);
 
-			sut[0, 0].Should().Be(2.ToMaybe());
-			sut[1, 0].Should().Be(2.ToMaybe());
-			sut[2, 0].Should().Be(2.ToMaybe());
-			sut[3, 0].Should().Be(2.ToMaybe());
+			sut[0, 0].Should().Be(2);
+			sut[1, 0].Should().Be(2);
+			sut[2, 0].Should().Be(2);
+			sut[3, 0].Should().Be(2);
 		}
 
 		[Theory]
@@ -177,17 +176,17 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 3)]
 		[InlineData(2, 2)]
 		[InlineData(3, 1)]
-		public void When2AtRowColumn_MoveUp_RowColumnIsNothingAnd2AtRow0SameColumn(int row, int column)
+		public void When2AtRowColumn_MoveUp_RowColumnIsEmptyAnd2AtRow0SameColumn(int row, int column)
 		{
 			var sut = new Game
 			{
-				[row, column] = 2.ToMaybe()
+				[row, column] = 2
 			};
 
 			sut.Move(Direction.Up);
 
-			sut[row, column].Should().Be(Maybe<int>.Nothing);
-			sut[0, column].Should().Be(2.ToMaybe());
+			sut[row, column].Should().Be(CellValue.Empty);
+			sut[0, column].Should().Be(2);
 		}
 
 		[Theory]
@@ -199,12 +198,12 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, column] = 2.ToMaybe()
+				[0, column] = 2
 			};
 
 			sut.Move(Direction.Up);
 
-			sut[0, column].Should().Be(2.ToMaybe());
+			sut[0, column].Should().Be(2);
 		}
 
 		[Fact]
@@ -212,18 +211,18 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[1, 1] = 2.ToMaybe(),
-				[2, 2] = 2.ToMaybe(),
-				[3, 3] = 2.ToMaybe()
+				[0, 0] = 2,
+				[1, 1] = 2,
+				[2, 2] = 2,
+				[3, 3] = 2
 			};
 
 			sut.Move(Direction.Up);
 
-			sut[0, 0].Should().Be(2.ToMaybe());
-			sut[0, 1].Should().Be(2.ToMaybe());
-			sut[0, 2].Should().Be(2.ToMaybe());
-			sut[0, 3].Should().Be(2.ToMaybe());
+			sut[0, 0].Should().Be(2);
+			sut[0, 1].Should().Be(2);
+			sut[0, 2].Should().Be(2);
+			sut[0, 3].Should().Be(2);
 		}
 	}
 }

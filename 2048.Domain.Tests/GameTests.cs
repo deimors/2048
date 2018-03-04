@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Functional.Maybe;
 using System.Linq;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace _2048.Domain.Tests
 			{
 				foreach (var column in Enumerable.Range(0, 4))
 				{
-					sut[row, column].Should().Be(Maybe<int>.Nothing);
+					sut[row, column].Should().Be(CellValue.Empty);
 				}
 			}
 		}

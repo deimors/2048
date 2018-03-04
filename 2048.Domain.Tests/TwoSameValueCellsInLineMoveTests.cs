@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Functional.Maybe;
 using Xunit;
 
 namespace _2048.Domain.Tests
@@ -11,13 +10,13 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[0, 1] = 2.ToMaybe()
+				[0, 0] = 2,
+				[0, 1] = 2
 			};
 
 			sut.Move(Direction.Right);
 
-			sut[0, 3].Should().Be(4.ToMaybe());
+			sut[0, 3].Should().Be(4);
 		}
 
 		[Fact]
@@ -25,16 +24,16 @@ namespace _2048.Domain.Tests
 		{
 			var sut = new Game
 			{
-				[0, 0] = 2.ToMaybe(),
-				[0, 1] = 2.ToMaybe(),
-				[0, 2] = 4.ToMaybe(),
-				[0, 3] = 4.ToMaybe()
+				[0, 0] = 2,
+				[0, 1] = 2,
+				[0, 2] = 4,
+				[0, 3] = 4
 			};
 
 			sut.Move(Direction.Right);
 
-			sut[0, 2].Should().Be(4.ToMaybe());
-			sut[0, 3].Should().Be(8.ToMaybe());
+			sut[0, 2].Should().Be(4);
+			sut[0, 3].Should().Be(8);
 		}
 	}
 }

@@ -5,35 +5,17 @@ using System.Linq;
 
 namespace _2048
 {
-	internal class Position
-	{
-		public int Row { get; }
-		public int Column { get; }
-
-		public Position(int row, int column)
-		{
-			Row = row;
-			Column = column;
-		}
-
-		public override string ToString()
-			=> $"({Row}, {Column})";
-
-		public static Position operator +(Position first, Position second)
-			=> new Position(first.Row + second.Row, first.Column + second.Column);
-	}
-
 	public class Game
 	{
-		private readonly Maybe<int>[,] _cells = new Maybe<int>[4,4];
+		private readonly CellValue[,] _cells = new CellValue[4,4];
 
-		public Maybe<int> this[int row, int column]
+		public CellValue this[int row, int column]
 		{
 			get => _cells[row, column];
 			set => _cells[row, column] = value;
 		}
 
-		private Maybe<int> this[Position pos]
+		private CellValue this[Position pos]
 		{
 			get => _cells[pos.Row, pos.Column];
 			set => _cells[pos.Row, pos.Column] = value;
@@ -50,7 +32,7 @@ namespace _2048
 		}
 
 		private void MoveNumberInDirection(Position origin, Direction direction) 
-			=> this[origin].Match(
+			=> this[origin].Apply(
 				originNumber => FindMoveTarget(origin, direction)
 					.Match(
 						target => MoveToTarget(origin, target, originNumber),
@@ -61,12 +43,12 @@ namespace _2048
 
 		private void MoveToTarget(Position origin, Position target, int originNumber)
 		{
-			this[origin] = Maybe<int>.Nothing;
-
-			this[target] = this[target].SelectOrElse(
+			this[origin] = CellValue.Empty;
+			
+			this[target] = this[target].Match(
 				targetNumber => originNumber + targetNumber,
 				() => originNumber
-			).ToMaybe();
+			);
 		}
 
 		private static IEnumerable<Position> GetPositionSequenceForMove(Direction direction)
@@ -100,7 +82,7 @@ namespace _2048
 		}
 
 		private Maybe<Position> FindMoveTarget(Position position, Direction direction)
-			=> this[position].SelectOrElse(
+			=> this[position].Match(
 				number => FindMoveTarget(number, Project(position, direction).ToArray()),
 				() => Maybe<Position>.Nothing
 			);
