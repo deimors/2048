@@ -49,23 +49,23 @@ namespace _2048
 			}
 		}
 
-		private void MoveNumberInDirection(Position position, Direction direction) 
-			=> this[position].Match(
-				number => FindMoveTarget(number, position, direction)
+		private void MoveNumberInDirection(Position origin, Direction direction) 
+			=> this[origin].Match(
+				originNumber => FindMoveTarget(origin, direction)
 					.Match(
-						target => MoveToTarget(position, target, number),
+						target => MoveToTarget(origin, target, originNumber),
 						() => { }
 					),
 				() => { }
 			);
 
-		private void MoveToTarget(Position origin, Position target, int number)
+		private void MoveToTarget(Position origin, Position target, int originNumber)
 		{
 			this[origin] = Maybe<int>.Nothing;
 
 			this[target] = this[target].SelectOrElse(
-				prevValue => number + prevValue,
-				() => number
+				targetNumber => originNumber + targetNumber,
+				() => originNumber
 			).ToMaybe();
 		}
 
@@ -98,10 +98,13 @@ namespace _2048
 				default: throw new ArgumentOutOfRangeException(nameof(direction), direction, $"Unknown Direction: {direction}");
 			}
 		}
-		
-		private Maybe<Position> FindMoveTarget(int startNumber, Position position, Direction direction)
-			=> FindMoveTarget(startNumber, Project(position, direction).ToArray());
 
+		private Maybe<Position> FindMoveTarget(Position position, Direction direction)
+			=> this[position].SelectOrElse(
+				number => FindMoveTarget(number, Project(position, direction).ToArray()),
+				() => Maybe<Position>.Nothing
+			);
+		
 		private Maybe<Position> FindMoveTarget(int startNumber, (Maybe<Position> previous, Position current)[] projection) 
 			=> projection
 				.FirstMaybe(pair => this[pair.current].HasValue)
