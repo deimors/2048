@@ -1,9 +1,28 @@
 ﻿using Functional.Maybe;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace _2048
 {
+	internal class Position
+	{
+		public int Row { get; }
+		public int Column { get; }
+
+		public Position(int row, int column)
+		{
+			Row = row;
+			Column = column;
+		}
+
+		public override string ToString()
+			=> $"({Row}, {Column})";
+
+		public static Position operator +(Position first, Position second)
+			=> new Position(first.Row + second.Row, first.Column + second.Column);
+	}
+
 	public class Game
 	{
 		private readonly Maybe<int>[,] _cells = new Maybe<int>[4,4];
@@ -14,112 +33,120 @@ namespace _2048
 			set => _cells[row, column] = value;
 		}
 
+		private Maybe<int> this[Position pos]
+		{
+			get => _cells[pos.Row, pos.Column];
+			set => _cells[pos.Row, pos.Column] = value;
+		}
+		
 		public void Move(Direction direction)
+		{
+			var positions = GetPositionsForMove(direction);
+
+			foreach (var position in positions)
+			{
+				this[position.Row, position.Column].Match(
+					number => FindMovePosition(number, Project(position, direction))
+						.Match(
+							newPosition =>
+							{
+								this[position] = Maybe<int>.Nothing;
+
+								this[newPosition] = this[newPosition].SelectOrElse(
+									prevValue => number + prevValue,
+									() => number
+								).ToMaybe();
+							},
+							() => { }
+						),
+					() => { }
+				);
+			}
+		}
+
+		private static IEnumerable<Position> GetPositionsForMove(Direction moveDirection)
+		{
+			var rows = Enumerable.Range(0, 4);
+			var columns = Enumerable.Range(0, 4);
+
+			switch (moveDirection)
+			{
+				case Direction.Down:
+					rows = rows.Reverse();
+					break;
+				case Direction.Right:
+					columns = columns.Reverse();
+					break;
+			}
+
+			return rows.SelectMany(row => columns.Select(column => new Position(row, column)));
+		}
+
+		private static IEnumerable<(Maybe<Position> previous, Position current)> Project(Position start, Direction direction)
+		{
+			var increment = GetIncrement(direction);
+			var current = start + increment;
+			var previous = Maybe<Position>.Nothing;
+
+			while (IsInBounds(current))
+			{
+				yield return (previous, current);
+				previous = current.ToMaybe();
+				current += increment;
+			}
+		}
+
+		private static Position GetIncrement(Direction direction)
 		{
 			switch (direction)
 			{
-				case Direction.Right:
-					foreach (var row in Enumerable.Range(0, 4))
-					{
-						foreach (var column in Enumerable.Range(0, 4).Reverse())
-						{
-							this[row, column].Match(
-								number =>
-								{
-									this[row, column] = Maybe<int>.Nothing;
+				case Direction.Right: return new Position(0, 1);
+				case Direction.Down: return new Position(1, 0);
+				case Direction.Left: return new Position(0, -1);
+				case Direction.Up: return new Position(-1, 0);
+				default: throw new ArgumentOutOfRangeException(nameof(direction), direction, $"Unknown Direction: {direction}");
+			}
+		}
 
-									var moveColumn = Enumerable.Range(column + 1, 3 - column)
-										.FirstMaybe(scanColumn => this[row, scanColumn].HasValue)
-										.SelectOrElse(
-											neighborColumn => neighborColumn - 1,
-											() => 3
-										);
+		private static bool IsInBounds(Position pos)
+			=> pos.Row >= 0 && pos.Row <= 3 && pos.Column >= 0 && pos.Column <= 3;
 
-									this[row, moveColumn] = number.ToMaybe();
-								},
-								() => { }
-							);
-						}
-					}
-					break;
+		private Maybe<Position> FindMovePosition(int startNumber, IEnumerable<(Maybe<Position> previous, Position current)> projection) 
+			=> projection
+				.FirstMaybe(pair => this[pair.current.Row, pair.current.Column].HasValue)
+				.SelectOrElse(
+					somePair => this[somePair.current.Row, somePair.current.Column].Value == startNumber
+						? somePair.current.ToMaybe()
+						: somePair.previous,
+					() => projection.LastMaybe().Select(pair => pair.current)
+				);
+	}
 
-				case Direction.Down:
-					foreach (var row in Enumerable.Range(0, 4).Reverse())
-					{
-						foreach (var column in Enumerable.Range(0, 4))
-						{
-							this[row, column].Match(
-								number =>
-								{
-									this[row, column] = Maybe<int>.Nothing;
+	internal static class EnumerableExtensions
+	{
+		public static IEnumerable<T> Prepend<T>(this IEnumerable<T> source, T prependItem)
+		{
+			yield return prependItem;
 
-									var moveRow = Enumerable.Range(row + 1, 3 - row)
-										.FirstMaybe(scanRow => this[scanRow, column].HasValue)
-										.SelectOrElse(
-											neighborRow => neighborRow - 1,
-											() => 3
-										);
+			foreach (var item in source)
+				yield return item;
+		}
 
-									this[moveRow, column] = number.ToMaybe();
-								},
-								() => { }
-							);
-						}
-					}
-					break;
+		public static IEnumerable<(T first, T second)> Pairwise<T>(this IEnumerable<T> source)
+		{
+			using (var enumerator = source.GetEnumerator())
+			{
+				if (!enumerator.MoveNext())
+					yield break;
 
-				case Direction.Left:
-					foreach (var row in Enumerable.Range(0, 4))
-					{
-						foreach (var column in Enumerable.Range(0, 4))
-						{
-							this[row, column].Match(
-								number =>
-								{
-									this[row, column] = Maybe<int>.Nothing;
+				var first = enumerator.Current;
 
-									var moveColumn = Enumerable.Range(0, column).Reverse()
-										.FirstMaybe(scanColumn => this[row, scanColumn].HasValue)
-										.SelectOrElse(
-											neighborColumn => neighborColumn + 1,
-											() => 0
-										);
-
-									this[row, moveColumn] = number.ToMaybe();
-								},
-								() => { }
-							);
-						}
-					}
-					break;
-
-				case Direction.Up:
-					foreach (var row in Enumerable.Range(0, 4))
-					{
-						foreach (var column in Enumerable.Range(0, 4))
-						{
-							this[row, column].Match(
-								number =>
-								{
-									this[row, column] = Maybe<int>.Nothing;
-
-									var moveRow = Enumerable.Range(0, row).Reverse()
-										.FirstMaybe(scanRow => this[scanRow, column].HasValue)
-										.SelectOrElse(
-											neighborRow => neighborRow + 1,
-											() => 0
-										);
-
-									this[moveRow, column] = number.ToMaybe();
-								},
-								() => { }
-							);
-						}
-					}
-					break;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+				while (enumerator.MoveNext())
+				{
+					var second = enumerator.Current;
+					yield return (first, second);
+					first = second;
+				}
 			}
 		}
 	}
