@@ -5,16 +5,16 @@ namespace _2048
 	public class Game
 	{
 		private readonly Board _board;
-		private readonly NewCellPlacer _newCellPlacer;
 		private readonly CellMover _cellMover;
+		private readonly NewCellPlacer _newCellPlacer;
 		private readonly GameStateEvaluator _stateEvaluator;
 		
 		public Game(IChooseNewCell chooseNewCell)
 		{
 			_board = new Board();
 
-			_newCellPlacer = new NewCellPlacer(chooseNewCell, _board);
 			_cellMover = new CellMover(_board);
+			_newCellPlacer = new NewCellPlacer(chooseNewCell, _board);
 			_stateEvaluator = new GameStateEvaluator(_board);
 		}
 
@@ -30,7 +30,7 @@ namespace _2048
 		
 		public void Move(Direction direction)
 		{
-			if (_cellMover.MoveCells(direction))
+			if (_cellMover.MoveAllCells(direction))
 			{
 				_newCellPlacer.PlaceNewCell();
 

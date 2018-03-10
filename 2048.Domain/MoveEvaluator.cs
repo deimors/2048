@@ -25,8 +25,36 @@ namespace _2048
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 		}
-		
-		public Maybe<Position> FindMoveTarget(Position position, Direction direction)
+
+		public IEnumerable<MoveCandidate> GetMoveCandidates(Direction direction)
+			=> GetPositionSequenceForMove(direction)
+				.Select(position => GetMoveCandidate(position, direction));
+
+		private IEnumerable<Position> GetPositionSequenceForMove(Direction direction)
+		{
+			var rows = Enumerable.Range(0, _board.Height);
+			var columns = Enumerable.Range(0, _board.Width);
+
+			switch (direction)
+			{
+				case Direction.Down:
+					rows = rows.Reverse();
+					break;
+				case Direction.Right:
+					columns = columns.Reverse();
+					break;
+			}
+
+			return rows.SelectMany(row => columns.Select(column => new Position(row, column)));
+		}
+
+		private MoveCandidate GetMoveCandidate(Position origin, Direction direction)
+			=> _board[origin].Match(
+				number => new MoveCandidate(number, origin, FindMoveTarget(origin, direction)),
+				() => new MoveCandidate(0, origin, Maybe<Position>.Nothing)
+			);
+
+		private Maybe<Position> FindMoveTarget(Position position, Direction direction)
 			=> _board[position].Match(
 				number => FindMoveTarget(number, Project(position, direction).ToArray()),
 				() => Maybe<Position>.Nothing
