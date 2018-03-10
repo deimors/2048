@@ -60,7 +60,7 @@
     <Compile Include="MoveCandidate.cs" />
     <Compile Include="MoveEvaluator.cs" />
     <Compile Include="CellMover.cs" />
-    <Compile Include="MoveTargetEvaluator.cs" />
+    <Compile Include="MoveTargetEvaluation.cs" />
     <Compile Include="NewCellPlacer.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,13 +12,10 @@ namespace _2048
 	internal class MoveEvaluator
 	{
 		private readonly Board _board;
-
-		private readonly MoveTargetEvaluator _targetEvaluator;
-
+		
 		public MoveEvaluator(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
-			_targetEvaluator = new MoveTargetEvaluator(board);
 		}
 
 		public IEnumerable<MoveCandidate> GetMoveCandidates(Direction direction)
@@ -45,7 +42,7 @@ namespace _2048
 
 		private MoveCandidate GetMoveCandidate(Position origin, Direction direction)
 			=> _board[origin].Match(
-				number => new MoveCandidate(number, origin, _targetEvaluator.FindMoveTarget(origin, direction)),
+				number => new MoveCandidate(number, origin, _board.FindMoveTarget(origin, direction)),
 				() => new MoveCandidate(0, origin, Maybe<Position>.Nothing)
 			);
 	}

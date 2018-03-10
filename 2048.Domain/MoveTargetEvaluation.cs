@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Functional.Maybe;
 using System.Collections.Generic;
 using System.Linq;
-using Functional.Maybe;
 
 namespace _2048
 {
-	public class MoveTargetEvaluator
+	internal static class MoveTargetEvaluation
 	{
 		private static readonly IReadOnlyDictionary<Direction, Position> MoveIncrements = new Dictionary<Direction, Position>
 		{
@@ -14,37 +13,30 @@ namespace _2048
 			{Direction.Left, new Position(0, -1)},
 			{Direction.Up, new Position(-1, 0)}
 		};
-
-		private readonly Board _board;
-
-		public MoveTargetEvaluator(Board board)
-		{
-			_board = board ?? throw new ArgumentNullException(nameof(board));
-		}
 		
-		public Maybe<Position> FindMoveTarget(Position position, Direction direction)
-			=> _board[position].Match(
-				number => FindMoveTarget(number, BuildPositionPairs(position, direction).ToArray()),
+		public static Maybe<Position> FindMoveTarget(this Board board, Position position, Direction direction)
+			=> board[position].Match(
+				number => board.FindMoveTarget(number, board.BuildPositionPairs(position, direction).ToArray()),
 				() => Maybe<Position>.Nothing
 			);
 		
-		private Maybe<Position> FindMoveTarget(int startNumber, PositionPair[] projection) 
+		private static Maybe<Position> FindMoveTarget(this Board board, int startNumber, PositionPair[] projection) 
 			=> projection
-				.FirstMaybe(pair => !_board[pair.Current].IsEmpty)
+				.FirstMaybe(pair => !board[pair.Current].IsEmpty)
 				.SelectOrElse(
-					somePair => _board[somePair.Current].Equals(startNumber)
+					somePair => board[somePair.Current].Equals(startNumber)
 						? somePair.Current.ToMaybe()
 						: somePair.Previous,
 					() => projection.LastMaybe().Select(pair => pair.Current)
 				);
 
-		private IEnumerable<PositionPair> BuildPositionPairs(Position start, Direction direction)
+		private static IEnumerable<PositionPair> BuildPositionPairs(this Board board, Position start, Direction direction)
 		{
 			var increment = GetIncrement(direction);
 			var current = start + increment;
 			var previous = Maybe<Position>.Nothing;
 
-			while (_board.IsInBounds(current))
+			while (board.IsInBounds(current))
 			{
 				yield return new PositionPair(previous, current);
 				previous = current.ToMaybe();
