@@ -1,16 +1,20 @@
-﻿using Functional.Maybe;
+﻿using System;
+using System.Collections;
+using Functional.Maybe;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace _2048
 {
-	public class Game
+	public class Game : IEnumerable<CellValue>
 	{
+		private readonly IPlaceNewCell _newCellPlacer;
 		private readonly CellValue[,] _cells = new CellValue[4,4];
 		private readonly MoveEvaluator _moveEvaluator;
-
-		public Game()
+		
+		public Game(IPlaceNewCell newCellPlacer)
 		{
+			_newCellPlacer = newCellPlacer ?? throw new ArgumentNullException(nameof(newCellPlacer));
 			_moveEvaluator = new MoveEvaluator(pos => this[pos], IsInBounds);
 		}
 
@@ -26,6 +30,12 @@ namespace _2048
 			set => _cells[pos.Row, pos.Column] = value;
 		}
 
+		public IEnumerator<CellValue> GetEnumerator() 
+			=> _cells.Cast<CellValue>().GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() 
+			=> GetEnumerator();
+
 		private static bool IsInBounds(Position pos)
 			=> pos.Row >= 0 && pos.Row <= 3 && pos.Column >= 0 && pos.Column <= 3;
 
@@ -33,20 +43,36 @@ namespace _2048
 		{
 			var positions = GetPositionSequenceForMove(direction);
 
-			foreach (var position in positions)
+			var moves = positions.Select(position => GetMove(position, direction));
+
+			var anyMoves = false;
+			
+			foreach (var (number, origin, target) in moves)
 			{
-				MoveNumberInDirection(position, direction);
+				target.Match(
+					targetPos =>
+					{
+						MoveToTarget(origin, targetPos, number);
+						anyMoves = true;
+					},
+					() => { }
+				);
+			}
+			
+			if (anyMoves)
+			{
+				var emptyPositions = GetEmptyPositions().ToArray();
+
+				var newCellPos = emptyPositions[_newCellPlacer.ChoosePositionIndex(emptyPositions.Length - 1)];
+
+				this[newCellPos] = _newCellPlacer.ChooseValue();
 			}
 		}
 
-		private void MoveNumberInDirection(Position origin, Direction direction) 
-			=> this[origin].Apply(
-				originNumber => _moveEvaluator.FindMoveTarget(origin, direction)
-					.Match(
-						target => MoveToTarget(origin, target, originNumber),
-						() => { }
-					),
-				() => { }
+		private (int number, Position origin, Maybe<Position> target) GetMove(Position origin, Direction direction)
+			=> this[origin].Match(
+				number => (number, origin, _moveEvaluator.FindMoveTarget(origin, direction)),
+				() => (0, origin, Maybe<Position>.Nothing)
 			);
 
 		private void MoveToTarget(Position origin, Position target, int originNumber)
@@ -76,5 +102,10 @@ namespace _2048
 
 			return rows.SelectMany(row => columns.Select(column => new Position(row, column)));
 		}
+
+		private IEnumerable<Position> GetEmptyPositions() 
+			=> Enumerable.Range(0, 4)
+				.SelectMany(row => Enumerable.Range(0, 4).Select(column => new Position(row, column)))
+				.Where(position => !this[position].HasValue);
 	}
 }

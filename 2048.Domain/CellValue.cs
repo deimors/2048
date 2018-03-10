@@ -19,22 +19,21 @@ namespace _2048
 		public bool Equals(CellValue other) 
 			=> _value.Equals(other._value);
 
-		public override bool Equals(object obj)
-		{
-			return obj is CellValue value && Equals(value) 
-			       || obj is int intValue && _value.SelectOrElse(v => v == intValue, () => false);
-		}
+		public override bool Equals(object obj) 
+			=> obj is CellValue value && Equals(value) 
+		    || obj is int intValue && _value.SelectOrElse(v => v == intValue, () => false);
 
-		public override int GetHashCode()
-		{
-			return _value.GetHashCode();
-		}
+		public override int GetHashCode() 
+			=> _value.GetHashCode();
+
+		public override string ToString()
+			=> _value.SelectOrElse(value => value.ToString(), () => "Empty");
 
 		public static readonly CellValue Empty = new CellValue(Maybe<int>.Nothing);
 
 		public static implicit operator CellValue(int value)
 			=> new CellValue(value.ToMaybe());
-
+		
 		public TResult Match<TResult>(Func<int, TResult> whenSome, Func<TResult> whenNone)
 			=> _value.SelectOrElse(whenSome, whenNone);
 

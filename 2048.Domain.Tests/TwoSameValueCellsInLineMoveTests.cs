@@ -9,7 +9,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At00AndAt01_MoveRight_4At03()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 0] = 2,
 				[0, 1] = 2
@@ -23,7 +23,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2Along00To02Line_MoveRight_2At02And4At03()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 0] = 2,
 				[0, 1] = 2,
@@ -39,7 +39,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At00And4At02AndAt03_MoveRight_2At02And8At03()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 0] = 2,
 				[0, 2] = 4,
@@ -55,7 +55,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At00AndAt01And4At02AndAt03_MoveRight_4At02And8At03()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 0] = 2,
 				[0, 1] = 2,
@@ -72,7 +72,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At02AndAt03_MoveLeft_4At00()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 2] = 2,
 				[0, 3] = 2
@@ -86,7 +86,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At00AndAt10_MoveDown_4At30()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[0, 0] = 2,
 				[1, 0] = 2
@@ -100,7 +100,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2At20AndAt30_MoveUp_4At00()
 		{
-			var sut = new Game
+			var sut = new Game(new FakePlaceNewCell(0, 2))
 			{
 				[2, 0] = 2,
 				[3, 0] = 2

@@ -77,7 +77,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameTests.cs" />
+    <Compile Include="FakePlaceNewCell.cs" />
+    <Compile Include="NewCellAfterMoveTests.cs" />
+    <Compile Include="StartOfGameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleCellMoveTests.cs" />
     <Compile Include="TwoDifferentValueCellsInLineMoveTests.cs" />

@@ -4,12 +4,12 @@ using Xunit;
 
 namespace _2048.Domain.Tests
 {
-	public class GameTests
+	public class StartOfGameTests
 	{
 		[Fact]
 		public void WhenEmpty_AllCellsContainNothing()
 		{
-			var sut = new Game();
+			var sut = new Game(new FakePlaceNewCell(0, 2));
 
 			foreach (var row in Enumerable.Range(0, 4))
 			{
@@ -18,6 +18,17 @@ namespace _2048.Domain.Tests
 					sut[row, column].Should().Be(CellValue.Empty);
 				}
 			}
+		}
+
+		[Fact]
+		public void When2At00_GameContains2()
+		{
+			var sut = new Game(new FakePlaceNewCell(0, 2))
+			{
+				[0, 0] = 2
+			};
+			
+			sut.Should().Contain(2);
 		}
 	}
 }
