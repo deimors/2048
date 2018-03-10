@@ -25,6 +25,6 @@ namespace _2048
 		}
 
 		private IEnumerable<Position> EmptyPositions
-			=> _board.AllPositions.Where(position => !_board[position].HasValue);
+			=> _board.AllPositions.Where(position => _board[position].IsEmpty);
 	}
 }

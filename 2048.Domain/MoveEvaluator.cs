@@ -26,9 +26,9 @@ namespace _2048
 
 		private Maybe<Position> FindMoveTarget(int startNumber, (Maybe<Position> previous, Position current)[] projection) 
 			=> projection
-				.FirstMaybe(pair => _board[pair.current].HasValue)
+				.FirstMaybe(pair => !_board[pair.current].IsEmpty)
 				.SelectOrElse(
-					somePair => _board[somePair.current].Value == startNumber
+					somePair => _board[somePair.current].Equals(startNumber)
 						? somePair.current.ToMaybe()
 						: somePair.previous,
 					() => projection.LastMaybe().Select(pair => pair.current)
