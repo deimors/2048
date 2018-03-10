@@ -6,6 +6,12 @@ using System.Linq;
 
 namespace _2048
 {
+	public enum GameState
+	{
+		Lost,
+		Playing
+	}
+
 	public class Game : IEnumerable<CellValue>
 	{
 		private readonly IPlaceNewCell _newCellPlacer;
@@ -29,6 +35,8 @@ namespace _2048
 			get => _cells[pos.Row, pos.Column];
 			set => _cells[pos.Row, pos.Column] = value;
 		}
+
+		public GameState State = GameState.Playing;
 
 		public IEnumerator<CellValue> GetEnumerator() 
 			=> _cells.Cast<CellValue>().GetEnumerator();
@@ -61,13 +69,26 @@ namespace _2048
 			
 			if (anyMoves)
 			{
-				var emptyPositions = GetEmptyPositions().ToArray();
+				PlaceNewCell();
 
-				var newCellPos = emptyPositions[_newCellPlacer.ChoosePositionIndex(emptyPositions.Length - 1)];
-
-				this[newCellPos] = _newCellPlacer.ChooseValue();
+				State = EvaluateGameState();
 			}
 		}
+
+		private void PlaceNewCell()
+		{
+			var emptyPositions = EmptyPositions.ToArray();
+
+			var newCellPos = emptyPositions[_newCellPlacer.ChoosePositionIndex(emptyPositions.Length - 1)];
+
+			this[newCellPos] = _newCellPlacer.ChooseValue();
+		}
+
+		private GameState EvaluateGameState() 
+			=> IsGameLost ? GameState.Lost : GameState.Playing;
+
+		private bool IsGameLost 
+			=> AllPositions.All(position => GetNeighbors(position).All(neighbor => !this[position].Equals(this[neighbor])));
 
 		private (int number, Position origin, Maybe<Position> target) GetMove(Position origin, Direction direction)
 			=> this[origin].Match(
@@ -102,10 +123,19 @@ namespace _2048
 
 			return rows.SelectMany(row => columns.Select(column => new Position(row, column)));
 		}
+		
+		private IEnumerable<Position> EmptyPositions
+			=> AllPositions.Where(position => !this[position].HasValue);
 
-		private IEnumerable<Position> GetEmptyPositions() 
+		private IEnumerable<Position> AllPositions
 			=> Enumerable.Range(0, 4)
-				.SelectMany(row => Enumerable.Range(0, 4).Select(column => new Position(row, column)))
-				.Where(position => !this[position].HasValue);
+				.SelectMany(row => Enumerable.Range(0, 4).Select(column => new Position(row, column)));
+
+		private IEnumerable<Position> GetNeighbors(Position position)
+		{
+			var offsets = new [] { new Position(-1, 0), new Position(1, 0), new Position(0, -1), new Position(0, 1) };
+
+			return offsets.Select(offset => position + offset).Where(neighbor => IsInBounds(neighbor));
+		}
 	}
 }

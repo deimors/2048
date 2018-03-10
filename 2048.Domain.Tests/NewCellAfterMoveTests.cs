@@ -34,4 +34,39 @@ namespace _2048.Domain.Tests
 			sut.Should().NotContain(cellValue => cellValue.Equals(4));
 		}
 	}
+
+	public class GameOverTests
+	{
+		[Fact]
+		public void WhenCheckerboard2And4ExceptLastCellAndNewCellIs4_MoveRight_GameStateIsLost()
+		{
+			var sut = new Game(new FakePlaceNewCell(0, 4))
+			{
+				[0, 0] = 2,  [0, 1] = 4, [0, 2] = 2, [0, 3] = 4,
+				[1, 0] = 4,  [1, 1] = 2, [1, 2] = 4, [1, 3] = 2,
+				[2, 0] = 2,  [2, 1] = 4, [2, 2] = 2, [2, 3] = 4,
+				[3, 0] = 2,  [3, 1] = 4, [3, 2] = 2
+			};
+
+			sut.Move(Direction.Right);
+
+			sut.State.Should().Be(GameState.Lost);
+		}
+
+		[Fact]
+		public void WhenCheckerboard2And4ExceptLastCellAndNewCellIs2_MoveRight_GameStateIsPlaying()
+		{
+			var sut = new Game(new FakePlaceNewCell(0, 2))
+			{
+				[0, 0] = 2,  [0, 1] = 4, [0, 2] = 2, [0, 3] = 4,
+				[1, 0] = 4,  [1, 1] = 2, [1, 2] = 4, [1, 3] = 2,
+				[2, 0] = 2,  [2, 1] = 4, [2, 2] = 2, [2, 3] = 4,
+				[3, 0] = 2,  [3, 1] = 4, [3, 2] = 2
+			};
+
+			sut.Move(Direction.Right);
+
+			sut.State.Should().Be(GameState.Playing);
+		}
+	}
 }

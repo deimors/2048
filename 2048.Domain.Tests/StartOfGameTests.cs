@@ -21,6 +21,14 @@ namespace _2048.Domain.Tests
 		}
 
 		[Fact]
+		public void WhenEmpty_GameStateIsPlaying()
+		{
+			var sut = new Game(new FakePlaceNewCell(0, 2));
+
+			sut.State.Should().Be(GameState.Playing);
+		}
+
+		[Fact]
 		public void When2At00_GameContains2()
 		{
 			var sut = new Game(new FakePlaceNewCell(0, 2))
