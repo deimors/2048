@@ -58,7 +58,7 @@
     <Compile Include="GameStateEvaluator.cs" />
     <Compile Include="IChooseNewCell.cs" />
     <Compile Include="MoveCandidate.cs" />
-    <Compile Include="MoveEvaluator.cs" />
+    <Compile Include="MoveCandidateEvaluation.cs" />
     <Compile Include="CellMover.cs" />
     <Compile Include="MoveTargetEvaluation.cs" />
     <Compile Include="NewCellPlacer.cs" />

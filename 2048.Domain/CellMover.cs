@@ -7,19 +7,16 @@ namespace _2048
 	{
 		private readonly Board _board;
 
-		private readonly MoveEvaluator _moveEvaluator;
-
 		public CellMover(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
-			_moveEvaluator = new MoveEvaluator(board);
 		}
 
 		public bool MoveAllCells(Direction direction)
 		{
 			var anyMoves = false;
 
-			foreach (var candidate in _moveEvaluator.GetMoveCandidates(direction))
+			foreach (var candidate in _board.GetMoveCandidates(direction))
 			{
 				candidate.Target.Match(
 					targetPos =>
