@@ -1,7 +1,19 @@
-﻿namespace _2048
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _2048
 {
 	internal class Position
 	{
+		private static readonly Position[] NeighborOffsets =
+		{
+			new Position(-1, 0),
+			new Position(1, 0),
+			new Position(0, -1),
+			new Position(0, 1)
+		};
+
 		public int Row { get; }
 		public int Column { get; }
 
@@ -10,6 +22,9 @@
 			Row = row;
 			Column = column;
 		}
+
+		public IEnumerable<Position> Neighbors
+			=> NeighborOffsets.Select(offset => this + offset);
 
 		public override string ToString()
 			=> $"({Row}, {Column})";

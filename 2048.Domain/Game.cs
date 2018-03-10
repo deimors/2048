@@ -6,13 +6,6 @@ using System.Linq;
 
 namespace _2048
 {
-	public enum GameState
-	{
-		Playing,
-		Lost,
-		Won
-	}
-
 	public class Game : IEnumerable<CellValue>
 	{
 		private readonly IPlaceNewCell _newCellPlacer;
@@ -37,7 +30,7 @@ namespace _2048
 			set => _cells[pos.Row, pos.Column] = value;
 		}
 
-		public GameState State;
+		public GameState State { get; private set; }
 
 		public IEnumerator<CellValue> GetEnumerator() 
 			=> _cells.Cast<CellValue>().GetEnumerator();
@@ -45,8 +38,12 @@ namespace _2048
 		IEnumerator IEnumerable.GetEnumerator() 
 			=> GetEnumerator();
 
-		private static bool IsInBounds(Position pos)
-			=> pos.Row >= 0 && pos.Row <= 3 && pos.Column >= 0 && pos.Column <= 3;
+		private bool IsInBounds(Position pos)
+			=> pos.Row >= 0 && pos.Row < Height && pos.Column >= 0 && pos.Column < Width;
+
+		private int Height => _cells.GetLength(0);
+		private int Width => _cells.GetLength(1);
+
 
 		public void Move(Direction direction)
 		{
@@ -93,7 +90,12 @@ namespace _2048
 					: GameState.Playing;
 
 		private bool IsGameLost 
-			=> AllPositions.All(position => GetNeighbors(position).All(neighbor => !this[position].Equals(this[neighbor])));
+			=> AllPositions.All(AllNeighborsAreDifferent);
+
+		private bool AllNeighborsAreDifferent(Position position) 
+			=> position.Neighbors
+				.Where(neighbor => IsInBounds(neighbor))
+				.All(neighbor => !this[position].Equals(this[neighbor]));
 
 		private bool IsGameWon
 			=> this.Any(value => value.Equals(2048));
@@ -114,10 +116,10 @@ namespace _2048
 			);
 		}
 
-		private static IEnumerable<Position> GetPositionSequenceForMove(Direction direction)
+		private IEnumerable<Position> GetPositionSequenceForMove(Direction direction)
 		{
-			var rows = Enumerable.Range(0, 4);
-			var columns = Enumerable.Range(0, 4);
+			var rows = Enumerable.Range(0, Height);
+			var columns = Enumerable.Range(0, Width);
 
 			switch (direction)
 			{
@@ -136,14 +138,7 @@ namespace _2048
 			=> AllPositions.Where(position => !this[position].HasValue);
 
 		private IEnumerable<Position> AllPositions
-			=> Enumerable.Range(0, 4)
-				.SelectMany(row => Enumerable.Range(0, 4).Select(column => new Position(row, column)));
-
-		private IEnumerable<Position> GetNeighbors(Position position)
-		{
-			var offsets = new [] { new Position(-1, 0), new Position(1, 0), new Position(0, -1), new Position(0, 1) };
-
-			return offsets.Select(offset => position + offset).Where(neighbor => IsInBounds(neighbor));
-		}
+			=> Enumerable.Range(0, Height)
+				.SelectMany(row => Enumerable.Range(0, Width).Select(column => new Position(row, column)));
 	}
 }

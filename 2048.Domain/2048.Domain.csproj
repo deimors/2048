@@ -52,6 +52,7 @@
     <Compile Include="CellValue.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="IPlaceNewCell.cs" />
     <Compile Include="MoveEvaluator.cs" />
     <Compile Include="Position.cs" />
