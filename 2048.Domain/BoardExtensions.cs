@@ -2,7 +2,7 @@
 {
 	internal static class BoardExtensions
 	{
-		public static bool IsInBounds(this IBoard board, Position pos)
+		public static bool IsInBounds(this Board board, Position pos)
 			=> pos.Row >= 0 && pos.Row < board.Height && pos.Column >= 0 && pos.Column < board.Width;
 	}
 }

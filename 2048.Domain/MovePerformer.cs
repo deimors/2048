@@ -7,11 +7,11 @@ namespace _2048
 {
 	internal class MovePerformer
 	{
-		private readonly IBoard _board;
+		private readonly Board _board;
 
 		private readonly MoveEvaluator _moveEvaluator;
 
-		public MovePerformer(IBoard board)
+		public MovePerformer(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 			_moveEvaluator = new MoveEvaluator(board);

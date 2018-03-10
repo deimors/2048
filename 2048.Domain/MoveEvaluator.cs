@@ -11,9 +11,9 @@ namespace _2048
 
 	internal class MoveEvaluator
 	{
-		private readonly IBoard _board;
+		private readonly Board _board;
 		
-		public MoveEvaluator(IBoard board)
+		public MoveEvaluator(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 		}

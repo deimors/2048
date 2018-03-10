@@ -5,9 +5,9 @@ namespace _2048
 {
 	internal class GameStateEvaluator
 	{
-		private readonly IBoard _board;
+		private readonly Board _board;
 
-		public GameStateEvaluator(IBoard board)
+		public GameStateEvaluator(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 		}

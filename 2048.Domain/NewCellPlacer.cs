@@ -7,9 +7,9 @@ namespace _2048
 	internal class NewCellPlacer
 	{
 		private readonly INewCellChooser _newCellChooser;
-		private readonly IBoard _board;
+		private readonly Board _board;
 
-		public NewCellPlacer(INewCellChooser newCellChooser, IBoard board)
+		public NewCellPlacer(INewCellChooser newCellChooser, Board board)
 		{
 			_newCellChooser = newCellChooser ?? throw new ArgumentNullException(nameof(newCellChooser));
 			_board = board ?? throw new ArgumentNullException(nameof(board));
