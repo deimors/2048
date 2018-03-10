@@ -8,8 +8,9 @@ namespace _2048
 {
 	public enum GameState
 	{
+		Playing,
 		Lost,
-		Playing
+		Won
 	}
 
 	public class Game : IEnumerable<CellValue>
@@ -36,7 +37,7 @@ namespace _2048
 			set => _cells[pos.Row, pos.Column] = value;
 		}
 
-		public GameState State = GameState.Playing;
+		public GameState State;
 
 		public IEnumerator<CellValue> GetEnumerator() 
 			=> _cells.Cast<CellValue>().GetEnumerator();
@@ -85,10 +86,17 @@ namespace _2048
 		}
 
 		private GameState EvaluateGameState() 
-			=> IsGameLost ? GameState.Lost : GameState.Playing;
+			=> IsGameLost 
+				? GameState.Lost 
+				: IsGameWon 
+					? GameState.Won 
+					: GameState.Playing;
 
 		private bool IsGameLost 
 			=> AllPositions.All(position => GetNeighbors(position).All(neighbor => !this[position].Equals(this[neighbor])));
+
+		private bool IsGameWon
+			=> this.Any(value => value.Equals(2048));
 
 		private (int number, Position origin, Maybe<Position> target) GetMove(Position origin, Direction direction)
 			=> this[origin].Match(
