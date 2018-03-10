@@ -49,12 +49,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardExtensions.cs" />
     <Compile Include="CellValue.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="IBoard.cs" />
     <Compile Include="IPlaceNewCell.cs" />
+    <Compile Include="MoveCandidate.cs" />
     <Compile Include="MoveEvaluator.cs" />
+    <Compile Include="MovePerformer.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

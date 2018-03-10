@@ -11,26 +11,24 @@ namespace _2048
 
 	internal class MoveEvaluator
 	{
-		private readonly GetCellValue _getCellValue;
-		private readonly IsInBounds _isInBounds;
-
-		public MoveEvaluator(GetCellValue getCellValue, IsInBounds isInBounds)
+		private readonly IBoard _board;
+		
+		public MoveEvaluator(IBoard board)
 		{
-			_getCellValue = getCellValue ?? throw new ArgumentNullException(nameof(getCellValue));
-			_isInBounds = isInBounds ?? throw new ArgumentNullException(nameof(isInBounds));
+			_board = board ?? throw new ArgumentNullException(nameof(board));
 		}
 		
 		public Maybe<Position> FindMoveTarget(Position position, Direction direction)
-			=> _getCellValue(position).Match(
+			=> _board[position].Match(
 				number => FindMoveTarget(number, Project(position, direction).ToArray()),
 				() => Maybe<Position>.Nothing
 			);
 
 		private Maybe<Position> FindMoveTarget(int startNumber, (Maybe<Position> previous, Position current)[] projection) 
 			=> projection
-				.FirstMaybe(pair => _getCellValue(pair.current).HasValue)
+				.FirstMaybe(pair => _board[pair.current].HasValue)
 				.SelectOrElse(
-					somePair => _getCellValue(somePair.current).Value == startNumber
+					somePair => _board[somePair.current].Value == startNumber
 						? somePair.current.ToMaybe()
 						: somePair.previous,
 					() => projection.LastMaybe().Select(pair => pair.current)
@@ -42,7 +40,7 @@ namespace _2048
 			var current = start + increment;
 			var previous = Maybe<Position>.Nothing;
 
-			while (_isInBounds(current))
+			while (_board.IsInBounds(current))
 			{
 				yield return (previous, current);
 				previous = current.ToMaybe();

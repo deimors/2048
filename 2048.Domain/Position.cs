@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace _2048
 {
-	internal class Position
+	public struct Position
 	{
 		private static readonly Position[] NeighborOffsets =
 		{
@@ -24,7 +24,13 @@ namespace _2048
 		}
 
 		public IEnumerable<Position> Neighbors
-			=> NeighborOffsets.Select(offset => this + offset);
+		{
+			get
+			{
+				var position = this;
+				return NeighborOffsets.Select(offset => position + offset);
+			}
+		}
 
 		public override string ToString()
 			=> $"({Row}, {Column})";
