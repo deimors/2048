@@ -13,7 +13,7 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 1)]
 		public void When2AtRowColumn_MoveRight_RowColumnIsEmptyAnd2AtSameRowColumn3(int row, int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, column] = 2
 			};
@@ -30,7 +30,7 @@ namespace _2048.Domain.Tests
 		[InlineData(3)]
 		public void When2AtRowAndColumn3_MoveRight_2AtSamePlace(int row)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, 3] = 2
 			};
@@ -43,7 +43,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2Along00To33Diagonal_MoveRight_2Along03To33Line()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, 0] = 2,
 				[1, 1] = 2,
@@ -67,7 +67,7 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 1)]
 		public void When2AtRowColumn_MoveDown_RowColumnIsEmptyAnd2AtRow3SameColumn(int row, int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, column] = 2
 			};
@@ -84,7 +84,7 @@ namespace _2048.Domain.Tests
 		[InlineData(3)]
 		public void When2AtRow3AndColumn_MoveDown_2AtSamePlace(int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[3, column] = 2
 			};
@@ -97,7 +97,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2Along00To33Diagonal_MoveDown_2Along30To33Line()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, 0] = 2,
 				[1, 1] = 2,
@@ -121,7 +121,7 @@ namespace _2048.Domain.Tests
 		[InlineData(2, 1)]
 		public void When2AtRowColumn_MoveLeft_RowColumnIsEmptyAnd2AtSameRowColumn0(int row, int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, column] = 2
 			};
@@ -138,7 +138,7 @@ namespace _2048.Domain.Tests
 		[InlineData(3)]
 		public void When2AtRowAndColumn0_MoveLeft_2AtSamePlace(int row)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, 0] = 2
 			};
@@ -151,7 +151,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2Along00To33Diagonal_MoveLeft_2Along00To30Line()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, 0] = 2,
 				[1, 1] = 2,
@@ -175,7 +175,7 @@ namespace _2048.Domain.Tests
 		[InlineData(3, 1)]
 		public void When2AtRowColumn_MoveUp_RowColumnIsEmptyAnd2AtRow0SameColumn(int row, int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[row, column] = 2
 			};
@@ -193,7 +193,7 @@ namespace _2048.Domain.Tests
 		[InlineData(3)]
 		public void When2AtRow0AndColumn_MoveUp_2AtSamePlace(int column)
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, column] = 2
 			};
@@ -206,7 +206,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When2Along00To33Diagonal_MoveUp_2Along00To03Line()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, 0] = 2,
 				[1, 1] = 2,

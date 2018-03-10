@@ -77,7 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FakePlaceNewCell.cs" />
+    <Compile Include="FakeNewCellChooser.cs" />
     <Compile Include="GameOverTests.cs" />
     <Compile Include="NewCellAfterMoveTests.cs" />
     <Compile Include="StartOfGameTests.cs" />

@@ -56,10 +56,11 @@
     <Compile Include="GameState.cs" />
     <Compile Include="GameStateEvaluator.cs" />
     <Compile Include="IBoard.cs" />
-    <Compile Include="IPlaceNewCell.cs" />
+    <Compile Include="INewCellChooser.cs" />
     <Compile Include="MoveCandidate.cs" />
     <Compile Include="MoveEvaluator.cs" />
     <Compile Include="MovePerformer.cs" />
+    <Compile Include="NewCellPlacer.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

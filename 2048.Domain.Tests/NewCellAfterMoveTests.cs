@@ -8,7 +8,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When8At00_MoveRight_Some2InGame()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 2))
+			var sut = new Game(new FakeNewCellChooser(0, 2))
 			{
 				[0, 0] = 8
 			};
@@ -21,7 +21,7 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When8And16And32And64Along00To03Line_MoveRight_NotSome2InGame()
 		{
-			var sut = new Game(new FakePlaceNewCell(0, 4))
+			var sut = new Game(new FakeNewCellChooser(0, 4))
 			{
 				[0, 0] = 8,
 				[0, 1] = 16,
