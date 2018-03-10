@@ -56,7 +56,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GameStateEvaluator.cs" />
-    <Compile Include="INewCellChooser.cs" />
+    <Compile Include="IChooseNewCell.cs" />
     <Compile Include="MoveCandidate.cs" />
     <Compile Include="MoveEvaluator.cs" />
     <Compile Include="MovePerformer.cs" />

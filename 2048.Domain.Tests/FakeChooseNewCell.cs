@@ -1,11 +1,11 @@
 ﻿namespace _2048.Domain.Tests
 {
-	public class FakeNewCellChooser : INewCellChooser
+	public class FakeChooseNewCell : IChooseNewCell
 	{
 		private readonly int _position;
 		private readonly int _value;
 
-		public FakeNewCellChooser(int position, int value)
+		public FakeChooseNewCell(int position, int value)
 		{
 			_position = position;
 			_value = value;

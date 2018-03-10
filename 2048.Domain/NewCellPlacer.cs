@@ -6,12 +6,12 @@ namespace _2048
 {
 	internal class NewCellPlacer
 	{
-		private readonly INewCellChooser _newCellChooser;
+		private readonly IChooseNewCell _chooseNewCell;
 		private readonly Board _board;
 
-		public NewCellPlacer(INewCellChooser newCellChooser, Board board)
+		public NewCellPlacer(IChooseNewCell chooseNewCell, Board board)
 		{
-			_newCellChooser = newCellChooser ?? throw new ArgumentNullException(nameof(newCellChooser));
+			_chooseNewCell = chooseNewCell ?? throw new ArgumentNullException(nameof(chooseNewCell));
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 		}
 
@@ -19,9 +19,9 @@ namespace _2048
 		{
 			var emptyPositions = EmptyPositions.ToArray();
 
-			var newCellPos = emptyPositions[_newCellChooser.ChoosePositionIndex(emptyPositions.Length - 1)];
+			var newCellPos = emptyPositions[_chooseNewCell.ChoosePositionIndex(emptyPositions.Length - 1)];
 
-			_board[newCellPos] = _newCellChooser.ChooseValue();
+			_board[newCellPos] = _chooseNewCell.ChooseValue();
 		}
 
 		private IEnumerable<Position> EmptyPositions

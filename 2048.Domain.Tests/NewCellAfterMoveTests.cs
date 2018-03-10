@@ -8,20 +8,20 @@ namespace _2048.Domain.Tests
 		[Fact]
 		public void When8At00_MoveRight_Some2InGame()
 		{
-			var sut = new Game(new FakeNewCellChooser(0, 2))
+			var sut = new Game(new FakeChooseNewCell(0, 2))
 			{
 				[0, 0] = 8
 			};
 
 			sut.Move(Direction.Right);
 
-			sut.Should().ContainSingle(cellValue => cellValue.Equals(2));
+			sut.Values.Should().ContainSingle(cellValue => cellValue.Equals(2));
 		}
 
 		[Fact]
 		public void When8And16And32And64Along00To03Line_MoveRight_NotSome2InGame()
 		{
-			var sut = new Game(new FakeNewCellChooser(0, 4))
+			var sut = new Game(new FakeChooseNewCell(0, 4))
 			{
 				[0, 0] = 8,
 				[0, 1] = 16,
@@ -31,7 +31,7 @@ namespace _2048.Domain.Tests
 
 			sut.Move(Direction.Right);
 
-			sut.Should().NotContain(cellValue => cellValue.Equals(4));
+			sut.Values.Should().NotContain(cellValue => cellValue.Equals(4));
 		}
 	}
 }
