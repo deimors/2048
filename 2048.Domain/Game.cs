@@ -6,7 +6,7 @@ namespace _2048
 	{
 		private readonly Board _board;
 		private readonly NewCellPlacer _newCellPlacer;
-		private readonly MovePerformer _movePerformer;
+		private readonly CellMover _cellMover;
 		private readonly GameStateEvaluator _stateEvaluator;
 		
 		public Game(IChooseNewCell chooseNewCell)
@@ -14,7 +14,7 @@ namespace _2048
 			_board = new Board();
 
 			_newCellPlacer = new NewCellPlacer(chooseNewCell, _board);
-			_movePerformer = new MovePerformer(_board);
+			_cellMover = new CellMover(_board);
 			_stateEvaluator = new GameStateEvaluator(_board);
 		}
 
@@ -30,7 +30,7 @@ namespace _2048
 		
 		public void Move(Direction direction)
 		{
-			if (_movePerformer.MoveCells(direction))
+			if (_cellMover.MoveCells(direction))
 			{
 				_newCellPlacer.PlaceNewCell();
 

@@ -5,13 +5,13 @@ using Functional.Maybe;
 
 namespace _2048
 {
-	internal class MovePerformer
+	internal class CellMover
 	{
 		private readonly Board _board;
 
 		private readonly MoveEvaluator _moveEvaluator;
 
-		public MovePerformer(Board board)
+		public CellMover(Board board)
 		{
 			_board = board ?? throw new ArgumentNullException(nameof(board));
 			_moveEvaluator = new MoveEvaluator(board);
