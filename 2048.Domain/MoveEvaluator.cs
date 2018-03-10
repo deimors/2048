@@ -12,6 +12,14 @@ namespace _2048
 	internal class MoveEvaluator
 	{
 		private readonly Board _board;
+
+		private static readonly IReadOnlyDictionary<Direction, Position> MoveIncrements = new Dictionary<Direction, Position>
+		{
+			{ Direction.Right, new Position(0, 1) },
+			{ Direction.Down, new Position(1, 0) },
+			{ Direction.Left, new Position(0, -1)},
+			{ Direction.Up, new Position(-1, 0)}
+		};
 		
 		public MoveEvaluator(Board board)
 		{
@@ -24,17 +32,17 @@ namespace _2048
 				() => Maybe<Position>.Nothing
 			);
 
-		private Maybe<Position> FindMoveTarget(int startNumber, (Maybe<Position> previous, Position current)[] projection) 
+		private Maybe<Position> FindMoveTarget(int startNumber, PositionPair[] projection) 
 			=> projection
-				.FirstMaybe(pair => !_board[pair.current].IsEmpty)
+				.FirstMaybe(pair => !_board[pair.Current].IsEmpty)
 				.SelectOrElse(
-					somePair => _board[somePair.current].Equals(startNumber)
-						? somePair.current.ToMaybe()
-						: somePair.previous,
-					() => projection.LastMaybe().Select(pair => pair.current)
+					somePair => _board[somePair.Current].Equals(startNumber)
+						? somePair.Current.ToMaybe()
+						: somePair.Previous,
+					() => projection.LastMaybe().Select(pair => pair.Current)
 				);
 
-		private IEnumerable<(Maybe<Position> previous, Position current)> Project(Position start, Direction direction)
+		private IEnumerable<PositionPair> Project(Position start, Direction direction)
 		{
 			var increment = GetIncrement(direction);
 			var current = start + increment;
@@ -42,21 +50,24 @@ namespace _2048
 
 			while (_board.IsInBounds(current))
 			{
-				yield return (previous, current);
+				yield return new PositionPair(previous, current);
 				previous = current.ToMaybe();
 				current += increment;
 			}
 		}
-		
+
 		private static Position GetIncrement(Direction direction)
+			=> MoveIncrements[direction];
+
+		private struct PositionPair
 		{
-			switch (direction)
+			public readonly Maybe<Position> Previous;
+			public readonly Position Current;
+
+			public PositionPair(Maybe<Position> previous, Position current)
 			{
-				case Direction.Right: return new Position(0, 1);
-				case Direction.Down: return new Position(1, 0);
-				case Direction.Left: return new Position(0, -1);
-				case Direction.Up: return new Position(-1, 0);
-				default: throw new ArgumentOutOfRangeException(nameof(direction), direction, $"Unknown Direction: {direction}");
+				Previous = previous;
+				Current = current;
 			}
 		}
 	}
